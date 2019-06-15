@@ -1,0 +1,7 @@
+.Toolbar {
+  position: fixed;
+  background-color: rgb(160, 108, 255);
+  width: 100%;
+  padding: 0.5rem;
+  top: 0;
+}
