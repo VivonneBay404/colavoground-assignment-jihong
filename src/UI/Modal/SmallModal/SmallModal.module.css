@@ -1,0 +1,9 @@
+.SmallModal {
+  background-color: #fff;
+  position: absolute;
+  z-index: 100;
+  padding: 1rem;
+  margin-top: 10rem;
+  margin-left: auto;
+  margin-right: auto;
+}

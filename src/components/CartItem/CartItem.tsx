@@ -6,7 +6,7 @@ type cartItem = {
   name: string;
   price: number;
   count: number;
-  //   clicked: () => void;
+  clicked: () => void;
 };
 
 const cartItem: React.FC<cartItem> = props => {
@@ -17,7 +17,9 @@ const cartItem: React.FC<cartItem> = props => {
         <div className={classes.name}>{props.name}</div>
         <div className={classes.price}>{props.price}</div>
       </div>
-      <div className={classes.check}>{props.count}</div>
+      <div className={classes.check} onClick={props.clicked}>
+        {props.count}
+      </div>
     </div>
   );
 };

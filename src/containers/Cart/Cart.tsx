@@ -6,6 +6,8 @@ import Modal from "../../UI/Modal/Modal";
 import Items from "../Items/Items";
 import CartItem from "../../components/CartItem/CartItem";
 import CartDiscount from "../../components/CartDiscount/CartDiscount";
+import SmallModal from "../../UI/Modal/SmallModal/SmallModal";
+import ItemCounter from "../../components/ItemCounter/ItemCounter";
 
 interface CartState {
   data: { items: {}; discounts: {} };
@@ -14,6 +16,8 @@ interface CartState {
   showModal: boolean;
   whichModal: string;
   totalPrice: number;
+  showSmallModal: boolean;
+  clickedCartItemId: string;
 }
 
 class Cart extends Component<{}, CartState> {
@@ -22,21 +26,19 @@ class Cart extends Component<{}, CartState> {
     showModal: false,
     whichModal: "",
     selectedItems: [] as {
-      // key: string;
       id: string;
       name: string;
       price: number;
-      // rate: number;
       count: number;
     }[],
     selectedDiscounts: [] as {
       id: string;
       name: string;
-      // price: number;
       rate: number;
-      // count: number;
     }[],
-    totalPrice: 0
+    totalPrice: 0,
+    showSmallModal: false,
+    clickedCartItemId: ""
   };
 
   itemsButtonHandler = () => {
@@ -49,6 +51,9 @@ class Cart extends Component<{}, CartState> {
   };
   modalCancelHandler = () => {
     this.setState({ showModal: false });
+  };
+  smallModalCancelHandler = () => {
+    this.setState({ showSmallModal: false });
   };
 
   //아이템을 선택해서 selectedItems에 넣어주는 func
@@ -80,7 +85,7 @@ class Cart extends Component<{}, CartState> {
     //가격 계산 로직
     let totalPrice = 0;
     oldSelectedItems.map(e => {
-      totalPrice += e.price;
+      totalPrice += e.price * e.count;
     });
 
     this.setState({
@@ -88,6 +93,45 @@ class Cart extends Component<{}, CartState> {
       selectedDiscounts: oldSelectedDiscounts,
       totalPrice: totalPrice
     });
+  };
+
+  cartItemCountHandler = (id: string) => {
+    console.log(id);
+    this.setState({ showSmallModal: true, clickedCartItemId: id });
+  };
+  //cartItems의 count를 바꿔줌
+  cartItemCountChangeHandler = (value: number) => {
+    const oldSelectedItems = [...this.state.selectedItems];
+    const clickedCartItemId = this.state.clickedCartItemId;
+    let willChangeItem: any = oldSelectedItems.find(
+      e => e.id === clickedCartItemId
+    );
+    const count = "count";
+    willChangeItem[count] = value;
+    const index = oldSelectedItems.findIndex(e => e.id === clickedCartItemId);
+    oldSelectedItems.splice(index, 1, willChangeItem);
+
+    //가격 계산 로직
+    let totalPrice = 0;
+    oldSelectedItems.map(e => {
+      totalPrice += e.price * e.count;
+    });
+
+    this.setState({ selectedItems: oldSelectedItems, totalPrice: totalPrice });
+  };
+
+  cartItemDeleteHandler = () => {
+    const oldSelectedItems = [...this.state.selectedItems];
+    const clickedCartItemId = this.state.clickedCartItemId;
+    const index = oldSelectedItems.findIndex(e => e.id === clickedCartItemId);
+    oldSelectedItems.splice(index, 1);
+    //가격 계산 로직
+    let totalPrice = 0;
+    oldSelectedItems.map(e => {
+      totalPrice += e.price * e.count;
+    });
+
+    this.setState({ selectedItems: oldSelectedItems, totalPrice: totalPrice });
   };
 
   render() {
@@ -111,6 +155,7 @@ class Cart extends Component<{}, CartState> {
           name={e.name}
           price={e.price}
           count={e.count}
+          clicked={() => this.cartItemCountHandler(e.id)}
           // rate={e.rate}
         />
       );
@@ -128,12 +173,31 @@ class Cart extends Component<{}, CartState> {
         />
       );
     });
+    // 클릭한 카트아이템 찾기
+
+    const clickedItem: any = selectedItems.find(
+      e => e.id === this.state.clickedCartItemId
+    );
 
     return (
       <>
         <Modal show={this.state.showModal} canceled={this.modalCancelHandler}>
           {modalContent}
         </Modal>
+        <SmallModal
+          show={this.state.showSmallModal}
+          canceled={this.smallModalCancelHandler}
+        >
+          <ItemCounter
+            canceled={this.smallModalCancelHandler}
+            countChangeHandler={value => this.cartItemCountChangeHandler(value)}
+            itemDeleteHandler={this.cartItemDeleteHandler}
+            clickedItem={
+              //처음에 undefined라 default value 넣음
+              clickedItem || { name: "defalut", count: 1, id: "default" }
+            }
+          />
+        </SmallModal>
         <div className={classes.Cart}>
           <div>박지홍</div>
           <Button clicked={this.itemsButtonHandler}>시술</Button>
