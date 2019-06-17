@@ -3,3 +3,12 @@
   display: flex;
   justify-content: space-between;
 }
+
+.DiscountedItem {
+  padding: 0.2rem;
+}
+
+.Name,
+.Price {
+  text-align: left;
+}

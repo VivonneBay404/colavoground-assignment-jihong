@@ -1,3 +1,10 @@
 .Title {
   text-align: center;
 }
+
+@media (min-width: 1000px) {
+  .Items {
+    max-width: 50%;
+    margin: auto;
+  }
+}

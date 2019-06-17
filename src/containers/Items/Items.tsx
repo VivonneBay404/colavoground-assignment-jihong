@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import classes from "./Items.module.css";
 import Item from "./Item/Item";
 import Button from "../../UI/Button/Button";
-import { number, string } from "prop-types";
 
 interface props {
   data: { items: {}; discounts: {} };
@@ -10,7 +9,7 @@ interface props {
   identifier: string;
   itemClicked: (id: string) => void;
   selectedItems: { count: number; name: string; price: number; id: string }[];
-  selectedDiscounts: {};
+  selectedDiscounts: { name: string; rate: number; id: string }[];
 }
 
 class Items extends Component<props> {
@@ -38,7 +37,13 @@ class Items extends Component<props> {
       });
     }
     let selectedIds = [];
-    const selectedItems = this.props.selectedItems;
+    let selectedItems: any[];
+    if (this.props.identifier === "items") {
+      selectedItems = this.props.selectedItems;
+    } else {
+      selectedItems = this.props.selectedDiscounts;
+    }
+
     for (const item of selectedItems) {
       selectedIds.push(item.id);
     }
@@ -49,6 +54,7 @@ class Items extends Component<props> {
       key: string;
       name: number;
       price: number;
+      rate: number;
       selected: boolean;
     }[] = [];
 
@@ -64,14 +70,18 @@ class Items extends Component<props> {
     console.log(itemsArr);
     console.log(selectedItems);
     console.log(newItemsArr);
+    //selected가 true인 아이템 바꿔넣기
+    const res = itemsArr.map(e => newItemsArr.find(n => n.key === e.key) || e);
 
-    const itemsList = itemsArr.map(e => {
+    console.log(res);
+    const itemsList = res.map(e => {
       return (
         <Item
           key={e.key}
           name={e.name}
           price={e.price}
           rate={e.rate}
+          selected={e.selected}
           //item을 클릭하면 key를 가져올수 있음
           clicked={() => this.props.itemClicked(e.key)}
         />

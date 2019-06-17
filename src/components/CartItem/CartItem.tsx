@@ -14,8 +14,8 @@ const cartItem: React.FC<cartItem> = props => {
     <div className={classes.CartItem}>
       {/* <button onClick={() => props.clicked(props.name)}>버튼</button> */}
       <div className={classes.nameNPriceWrapper}>
-        <div className={classes.name}>{props.name}</div>
-        <div className={classes.price}>{props.price}</div>
+        <div className={classes.Name}>{props.name}</div>
+        <div className={classes.Price}>{props.price}</div>
       </div>
       <div className={classes.check} onClick={props.clicked}>
         {props.count}

@@ -12,9 +12,16 @@
 }
 .TotalPriceWrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .Price {
   font-size: 3rem;
+}
+
+@media (min-width: 1000px) {
+  .Cart {
+    max-width: 50%;
+    margin: auto;
+  }
 }
